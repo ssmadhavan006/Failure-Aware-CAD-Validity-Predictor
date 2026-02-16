@@ -1,0 +1,39 @@
+{
+  "total": 2500,
+  "by_class": {
+    "valid": {
+      "total": 500,
+      "kernel_valid": 495,
+      "kernel_invalid": 5,
+      "construction_errors": 0
+    },
+    "self_intersection": {
+      "total": 500,
+      "kernel_valid": 0,
+      "kernel_invalid": 500,
+      "construction_errors": 0
+    },
+    "non_manifold": {
+      "total": 500,
+      "kernel_valid": 0,
+      "kernel_invalid": 500,
+      "construction_errors": 0
+    },
+    "degenerate_face": {
+      "total": 500,
+      "kernel_valid": 500,
+      "kernel_invalid": 0,
+      "construction_errors": 0
+    },
+    "tolerance_error": {
+      "total": 500,
+      "kernel_valid": 500,
+      "kernel_invalid": 0,
+      "construction_errors": 0
+    }
+  },
+  "by_subfamily": {},
+  "construction_errors": 0,
+  "kernel_invalid": 1005,
+  "kernel_valid": 1495
+}

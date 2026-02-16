@@ -1,0 +1,7 @@
+{
+    "family": "t_junction",
+    "main_size": 20,
+    "branch_w": 8,
+    "branch_h": 8,
+    "branch_d": 12
+}

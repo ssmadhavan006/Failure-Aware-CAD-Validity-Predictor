@@ -1,0 +1,18 @@
+# Core ML & Data Science
+numpy
+pandas
+matplotlib
+scikit-learn
+joblib
+jupyter
+shap
+seaborn
+
+# CAD Libraries
+cadquery
+
+# Note: pythonocc-core is only available via conda.
+# CadQuery already includes OCP (OpenCascade Python bindings) which provides
+# equivalent kernel-level geometry checks. For full pythonocc-core support,
+# install manually:
+#   conda install -c conda-forge pythonocc-core

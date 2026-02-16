@@ -1,0 +1,7 @@
+{
+    "family": "multi_cross",
+    "n_segments": 5,
+    "amplitude": 12,
+    "wavelength": 8,
+    "extrude": 10
+}

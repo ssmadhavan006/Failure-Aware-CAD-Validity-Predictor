@@ -1,0 +1,6 @@
+{
+    "family": "sub_tolerance_box",
+    "length": 1e-4,
+    "width": 1e-4,
+    "height": 1e-4
+}

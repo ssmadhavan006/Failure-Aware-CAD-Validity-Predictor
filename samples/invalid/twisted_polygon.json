@@ -1,0 +1,7 @@
+{
+    "family": "twisted_polygon",
+    "n_points": 6,
+    "radius": 15,
+    "extrude": 10,
+    "twist_seed": 99
+}

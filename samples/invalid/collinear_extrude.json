@@ -1,0 +1,6 @@
+{
+    "family": "collinear_extrude",
+    "length": 30,
+    "extrude_h": 10,
+    "deviation": 1e-6
+}

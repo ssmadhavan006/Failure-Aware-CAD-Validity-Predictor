@@ -1,0 +1,46 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Generated CAD outputs (keep repo clean; regenerate via scripts)
+*.step
+*.STEP
+*.stl
+*.STL
+
+# Data files (too large for git — regenerate via pipeline)
+data/*.csv
+data/*.parquet
+data/*.npy
+data/*.jsonl
+
+# Model artifacts
+models/*.pkl
+models/*.joblib
+models/figures/
+models/*.json
+models/*.txt
+
+# Example outputs (regenerated via --test-suite)
+examples/

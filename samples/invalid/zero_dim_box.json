@@ -1,0 +1,6 @@
+{
+    "family": "zero_dim_box",
+    "length": 10,
+    "width": 10,
+    "height": 1e-5
+}

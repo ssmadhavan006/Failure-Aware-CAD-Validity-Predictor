@@ -1,0 +1,8 @@
+{
+    "family": "scale_mismatch_boolean",
+    "large_size": 100,
+    "tiny_size": 0.001,
+    "offset_x": 50,
+    "offset_y": 50,
+    "offset_z": 50
+}
