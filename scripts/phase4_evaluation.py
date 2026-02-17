@@ -1,19 +1,4 @@
-"""
-Phase 4 — Evaluation & In-Depth Failure Analysis (Comprehensive)
-================================================================
-Sections:
-  4.1  Standard metrics, confusion matrix, PR curves
-  4.2  Calibration (reliability diagrams, Brier, log-loss)
-  4.3  SHAP explainability (global + local waterfall)
-  4.4  Visual error analysis (misclassification patterns + 3D wireframes)
-  4.5  Ablation study (per-class + macro)
-  4.6  Uncertainty analysis (coverage, error rates, boundary cases)
-  4.7  Boundary case analysis
-  4.8  Config & artifact save
-
-Usage:
-    python scripts/phase4_evaluation.py [--data-dir data] [--models-dir models] [--seed 42]
-"""
+"""Evaluation and failure analysis: metrics, calibration, SHAP, ablation, uncertainty."""
 
 from __future__ import annotations
 import argparse, json, sys, io, os
@@ -52,9 +37,7 @@ LABEL_SHORT = {
 }
 
 
-# ═══════════════════════════════════════════════════════════════════
-# Helpers
-# ═══════════════════════════════════════════════════════════════════
+# --- Helpers ---
 def load_data_and_split(data_dir: Path, seed: int):
     from sklearn.model_selection import train_test_split
 
@@ -142,9 +125,7 @@ def _shape_to_vertices_edges(shape):
     return np.array(verts) if verts else np.zeros((0, 3)), edges
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.1  Standard Metrics + Confusion Matrix + PR Curves
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.1  Standard Metrics + Confusion Matrix + PR Curves ---
 def section_41(data, models_dir, fig_dir, R):
     import joblib
     from sklearn.metrics import (
@@ -190,7 +171,7 @@ def section_41(data, models_dir, fig_dir, R):
         json.dump(metrics_json, f, indent=2)
     print("  [SAVED] phase4_metrics.json")
 
-    # ── Confusion matrix (raw) ────────────────────────────────────
+    # Confusion matrix (raw)
     cm = confusion_matrix(y_t, y_p, labels=labels)
     fig, axes = plt.subplots(1, 2, figsize=(16, 6))
     sns.heatmap(
@@ -261,7 +242,7 @@ def section_41(data, models_dir, fig_dir, R):
             f"    ambiguity at the class boundary but lacks discriminative features."
         )
 
-    # ── PR Curves ─────────────────────────────────────────────────
+    # PR Curves
     y_bin = label_binarize(y_t, classes=labels)
     fig, ax = plt.subplots(figsize=(9, 7))
     colors = sns.color_palette("husl", len(labels))
@@ -299,9 +280,7 @@ def section_41(data, models_dir, fig_dir, R):
     return metrics_json
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.2  Calibration
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.2  Calibration ---
 def section_42(data, models_dir, fig_dir, R):
     import joblib
     from sklearn.calibration import calibration_curve
@@ -387,9 +366,7 @@ def section_42(data, models_dir, fig_dir, R):
     print("  [SAVED] phase4_calibration_curves.png")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.3  SHAP (Global + Local Waterfall)
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.3  SHAP (Global + Local Waterfall) ---
 def section_43(data, models_dir, fig_dir, R):
     import joblib
 
@@ -486,7 +463,7 @@ def section_43(data, models_dir, fig_dir, R):
         plt.close(fig)
         print("  [SAVED] phase4_shap_per_class.png")
 
-    # ── Local waterfall plots (3 individual predictions) ──────────
+    # Local waterfall plots (3 individual predictions)
     y_p = rf.predict(X_t)
     proba = rf.predict_proba(X_t)
     max_p = proba.max(axis=1)
@@ -569,9 +546,7 @@ def section_43(data, models_dir, fig_dir, R):
                 R.append(f"        clearly separating this class from alternatives.")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.4  Error Analysis
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.4  Error Analysis ---
 def section_44(data, data_dir, fig_dir, R):
     import joblib
 
@@ -761,9 +736,7 @@ def section_44(data, data_dir, fig_dir, R):
         R.append(f"    Sample {i}: true={tl}, pred={pl}, max_prob={proba[i].max():.4f}")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.5  Ablation Study (with per-class)
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.5  Ablation Study (with per-class) ---
 def section_45(data, fig_dir, R, seed=42):
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.metrics import f1_score, classification_report
@@ -891,9 +864,7 @@ def section_45(data, fig_dir, R, seed=42):
     )
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.6  Uncertainty Analysis (comprehensive)
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.6  Uncertainty Analysis (comprehensive) ---
 def section_46(data, models_dir, fig_dir, R):
     import joblib
 
@@ -1057,9 +1028,7 @@ def section_46(data, models_dir, fig_dir, R):
         )
 
 
-# ═══════════════════════════════════════════════════════════════════
-# 4.7  Boundary Case Analysis
-# ═══════════════════════════════════════════════════════════════════
+# --- 4.7  Boundary Case Analysis ---
 def section_47(data, models_dir, fig_dir, R):
     import joblib
 
@@ -1135,11 +1104,9 @@ def section_47(data, models_dir, fig_dir, R):
     R.append(f"    random noise.")
 
 
-# ═══════════════════════════════════════════════════════════════════
-# Main
-# ═══════════════════════════════════════════════════════════════════
+# --- Main ---
 def main():
-    parser = argparse.ArgumentParser(description="Phase 4 — Evaluation")
+    parser = argparse.ArgumentParser(description="Evaluation & Failure Analysis")
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--models-dir", default="models")
     parser.add_argument("--seed", type=int, default=42)
@@ -1150,36 +1117,34 @@ def main():
     fig_dir = models_dir / "figures"
     fig_dir.mkdir(parents=True, exist_ok=True)
 
-    print("\n╔════════════════════════════════════════════════════════════╗")
-    print("║  Phase 4 — Evaluation & In-Depth Failure Analysis        ║")
-    print("╚════════════════════════════════════════════════════════════╝\n")
+    print("\nEvaluation & Failure Analysis\n")
 
     data = load_data_and_split(data_dir, seed=args.seed)
     print(
         f"  Train:{len(data['y_train'])}, Val:{len(data['y_val'])}, Test:{len(data['y_test'])}"
     )
 
-    R = ["=" * 60, "  Phase 4 — Evaluation Report", "=" * 60]
+    R = ["=" * 60, "  Evaluation Report", "=" * 60]
 
-    print("\n── 4.1 Metrics + Confusion Matrix + PR Curves ──────────────")
+    print("\n4.1 Metrics + Confusion Matrix + PR Curves")
     metrics = section_41(data, models_dir, fig_dir, R)
 
-    print("\n── 4.2 Calibration ────────────────────────────────────────")
+    print("\n4.2 Calibration")
     section_42(data, models_dir, fig_dir, R)
 
-    print("\n── 4.3 SHAP Explainability ────────────────────────────────")
+    print("\n4.3 SHAP Explainability")
     section_43(data, models_dir, fig_dir, R)
 
-    print("\n── 4.4 Visual Error Analysis ──────────────────────────────")
+    print("\n4.4 Visual Error Analysis")
     section_44(data, data_dir, fig_dir, R)
 
-    print("\n── 4.5 Ablation Study ─────────────────────────────────────")
+    print("\n4.5 Ablation Study")
     section_45(data, fig_dir, R, seed=args.seed)
 
-    print("\n── 4.6 Uncertainty Analysis ───────────────────────────────")
+    print("\n4.6 Uncertainty Analysis")
     section_46(data, models_dir, fig_dir, R)
 
-    print("\n── 4.7 Boundary Case Analysis ─────────────────────────────")
+    print("\n4.7 Boundary Case Analysis")
     section_47(data, models_dir, fig_dir, R)
 
     # Save report
@@ -1203,7 +1168,7 @@ def main():
         json.dump(cfg, f, indent=2)
     print(f"  Config → {models_dir / 'phase4_eval_config.json'}")
 
-    print("\n" + "═" * 60 + "\n  Phase 4 Complete\n" + "═" * 60)
+    print("\nEvaluation complete")
 
 
 if __name__ == "__main__":

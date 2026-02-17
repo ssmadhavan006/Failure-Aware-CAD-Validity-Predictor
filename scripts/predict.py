@@ -1,27 +1,4 @@
-"""
-Phase 5 — CAD Validity Predictor (CLI)
-=======================================
-Usage:
-    python scripts/predict.py input.json
-    python scripts/predict.py input.json --pretty
-    python scripts/predict.py input.json --pretty --explain
-    python scripts/predict.py --params '{"family":"primitive_box","length":30,"width":20,"height":10}'
-
-Input JSON:
-    { "family": "primitive_box", "length": 30, "width": 20, "height": 10 }
-
-Output JSON:
-    {
-      "valid": true,
-      "failure_mode": "none",
-      "confidence": 0.97,
-      "uncertainty": 0.003,
-      "status": "Confident",
-      "predicted_class": "valid",
-      "label_index": 0,
-      "probabilities": { "valid": 0.97, ... }
-    }
-"""
+"""CAD validity predictor CLI."""
 
 from __future__ import annotations
 
@@ -35,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-# ── UTF-8 on Windows ──────────────────────────────────────────────
+# UTF-8 on Windows
 if os.name == "nt" and hasattr(sys.stdout, "buffer"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
@@ -58,7 +35,7 @@ LABEL_NAMES = {
     4: "tolerance_error",
 }
 
-# ── Supported families (must match actual generator sub-family names) ─
+# Supported families (must match actual generator sub-family names)
 FAMILY_INFO = {
     # Valid generators
     "primitive_box": {"generator": "valid", "required": ["length", "width", "height"]},
@@ -299,7 +276,7 @@ def predict(params: dict, rf=None, ensemble=None, feature_names=None) -> dict:
     pred_class = int(proba.argmax())
     max_prob = float(proba.max())
 
-    # 5. Ensemble uncertainty (uses tuned thresholds from Phase 3)
+    # 5. Ensemble uncertainty (uses tuned thresholds from training)
     uncertainty = 0.0
     prob_threshold = 0.6  # default fallback
     std_threshold = 0.15  # default fallback
@@ -310,7 +287,7 @@ def predict(params: dict, rf=None, ensemble=None, feature_names=None) -> dict:
         proba = mean_proba[0]
         pred_class = int(proba.argmax())
         max_prob = float(proba.max())
-        # Use the TUNED thresholds from the ensemble (set during Phase 3)
+        # Use the TUNED thresholds from the ensemble (set during training)
         prob_threshold = ensemble.prob_threshold
         std_threshold = ensemble.std_threshold
 
@@ -322,7 +299,7 @@ def predict(params: dict, rf=None, ensemble=None, feature_names=None) -> dict:
     pred_name = LABEL_NAMES.get(pred_class, "unknown")
     is_valid = pred_name == "valid" and not is_uncertain
     failure_mode = (
-        "none" if is_valid else (pred_name if not is_uncertain else "uncertain")
+        "none" if is_valid else (pred_name if not is_uncertain else "unknown")
     )
 
     prob_dict = {}
@@ -330,7 +307,7 @@ def predict(params: dict, rf=None, ensemble=None, feature_names=None) -> dict:
         prob_dict[name] = round(float(proba[i]), 4) if i < len(proba) else 0.0
 
     result = {
-        "valid": is_valid,
+        "valid": "uncertain" if is_uncertain else is_valid,
         "failure_mode": failure_mode,
         "confidence": round(max_prob, 4),
         "uncertainty": round(uncertainty, 4),
@@ -393,12 +370,12 @@ def main():
     models_dir = Path(args.models_dir) if args.models_dir else None
     rf, ensemble, feature_names = load_models(models_dir)
 
-    # ── Test suite mode ───────────────────────────────────────────
+    # Test suite mode
     if args.test_suite:
         run_test_suite(rf, ensemble, feature_names)
         return
 
-    # ── Normal prediction mode ────────────────────────────────────
+    # Normal prediction mode
     if args.params:
         try:
             params = json.loads(args.params)
@@ -440,7 +417,7 @@ def main():
 def run_test_suite(rf, ensemble, feature_names):
     """Run predictions on known test cases and report results."""
     test_cases = [
-        # ── Valid shapes ──────────────────────────────────────────
+        # Valid shapes
         {
             "name": "Valid box (large)",
             "expected": "valid",
@@ -503,7 +480,7 @@ def run_test_suite(rf, ensemble, feature_names):
                 "height": 20,
             },
         },
-        # ── Degenerate shapes ─────────────────────────────────────
+        # Degenerate shapes
         {
             "name": "Zero-dim box (degenerate)",
             "expected": "degenerate_face",
@@ -524,7 +501,7 @@ def run_test_suite(rf, ensemble, feature_names):
                 "height": 0.001,
             },
         },
-        # ── Tolerance errors ──────────────────────────────────────
+        # Tolerance errors
         {
             "name": "Sub-tolerance box",
             "expected": "tolerance_error",
@@ -544,7 +521,7 @@ def run_test_suite(rf, ensemble, feature_names):
                 "fillet_r": 1e-4,
             },
         },
-        # ── Self-intersection ─────────────────────────────────────
+        # Self-intersection
         {
             "name": "Bowtie extrude (self-int)",
             "expected": "self_intersection",
@@ -557,7 +534,7 @@ def run_test_suite(rf, ensemble, feature_names):
                 "cy": 10,
             },
         },
-        # ── Non-manifold ──────────────────────────────────────────
+        # Non-manifold
         {
             "name": "Face-sharing compound (NM)",
             "expected": "non_manifold",
@@ -570,7 +547,7 @@ def run_test_suite(rf, ensemble, feature_names):
     ]
 
     print("=" * 78)
-    print("  Phase 5 — Inference Test Suite")
+    print("  Inference Test Suite")
     print("=" * 78)
 
     results_list = []
@@ -592,7 +569,7 @@ def run_test_suite(rf, ensemble, feature_names):
         matches = pred == expected
         if matches:
             n_correct += 1
-        icon = "✅" if matches else "❌"
+        icon = "[PASS]" if matches else "[FAIL]"
 
         print(
             f"  {icon} {tc['name']:30s} → {pred:20s} "

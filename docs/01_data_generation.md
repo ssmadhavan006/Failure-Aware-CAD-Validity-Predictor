@@ -1,4 +1,4 @@
-# Phase 1 — Synthetic Data Generation
+# Synthetic Data Generation
 
 > **Script:** `scripts/generate_dataset.py`  
 > **Output:** `data/dataset.jsonl`, `data/dataset_stats.json`

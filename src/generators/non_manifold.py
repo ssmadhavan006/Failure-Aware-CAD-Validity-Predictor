@@ -101,7 +101,7 @@ class NonManifoldGenerator(BaseGenerator):
                 error_msg=str(exc)[:200],
             )
 
-    # ── sub-family builders ───────────────────────────────────────
+    # sub-family builders
 
     def _face_sharing(self, p):
         """Two boxes sharing a face, combined into a compound (NOT fused)."""

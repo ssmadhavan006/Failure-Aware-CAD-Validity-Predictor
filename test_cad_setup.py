@@ -1,18 +1,10 @@
-"""
-Phase 0 Verification Script — Failure-Aware CAD Validity Predictor
-===================================================================
-Verifies that the development environment is correctly set up by:
-  1. Importing all required libraries
-  2. Creating a simple CadQuery box
-  3. Exporting it as a STEP file
-  4. Performing a basic validity check via OCP (OpenCascade kernel)
-"""
+"""Verify that the development environment is correctly set up."""
 
 import sys
 import os
 
-PASS = "\033[92m✓\033[0m"
-FAIL = "\033[91m✗\033[0m"
+PASS = "[ok]"
+FAIL = "[FAIL]"
 
 def check_imports():
     """Check that all core libraries can be imported."""
@@ -146,12 +138,7 @@ def check_kernel_validity():
 
 
 def main():
-    print()
-    print("╔═══════════════════════════════════════════════════════╗")
-    print("║   Failure-Aware CAD Validity Predictor                ║")
-    print("║   Phase 0 — Environment Verification                  ║")
-    print("╚═══════════════════════════════════════════════════════╝")
-    print()
+    print("\nEnvironment Verification\n")
 
     results = {}
     results["imports"] = check_imports()

@@ -4,7 +4,7 @@
 
 This project is a machine learning pipeline that predicts whether a given set of parameters will result in a valid CAD model *before* the expensive geometry kernel operation is executed. It is a classification problem with the following classes: `valid`, `self_intersection`, `non_manifold`, `degenerate_face`, and `tolerance_error`.
 
-The project is structured into several phases:
+The project is structured into several stages:
 1.  **Data Generation:** Synthetically create CAD models (both valid and invalid) from a set of predefined "families" (e.g., `primitive_box`, `bowtie_extrude`).
 2.  **Feature Extraction:** For each generated shape, extract a comprehensive feature vector. This includes:
     *   **Base Features:** Bounding box dimensions, volume, surface area, topology counts (faces, edges, etc.), and various geometric ratios.
@@ -61,16 +61,16 @@ The primary prediction script is `scripts/predict.py`.
 
 ## Development Conventions
 
-*   **Phased Approach:** The project is organized into distinct, sequential phases, with scripts for each:
-    *   `scripts/generate_dataset.py` (Phase 1)
-    *   `scripts/extract_features.py` (Phase 2)
-    *   `scripts/train_models.py` (Phase 3)
-    *   `scripts/phase4_evaluation.py` (Phase 4)
-    *   `scripts/predict.py` (Phase 5)
+*   **Pipeline Scripts:** The project is organized into distinct, sequential steps, with scripts for each:
+    *   `scripts/generate_dataset.py` (data generation)
+    *   `scripts/extract_features.py` (feature extraction)
+    *   `scripts/train_models.py` (model training)
+    *   `scripts/phase4_evaluation.py` (evaluation)
+    *   `scripts/predict.py` (prediction CLI)
     *   `scripts/diagnose_predictions.py` (Diagnostics)
 *   **Feature Engineering:** Features are defined in the `src/features/` directory. New features should be added there and integrated into the main feature extraction pipeline.
 *   **Data and Models:** The `data/` and `models/` directories are intended for generated datasets and trained models, respectively. They are git-ignored by default.
 *   **Uncertainty Quantification:** The model provides an "uncertainty" score based on the standard deviation of predictions from an ensemble of models. If the confidence is low or the uncertainty is high, the prediction status is marked as "Uncertain".
 *   **Testing:** A simple verification script `test_cad_setup.py` ensures the environment is correctly configured. The prediction script also includes a `--test-suite` argument to run a set of predefined test cases.
-*   **Documentation:** Detailed documentation is available in the `docs/` directory, including comprehensive reports and phase-specific guides.
+*   **Documentation:** Detailed documentation is available in the `docs/` directory, including comprehensive reports and step-specific guides.
 *   **Samples:** Sample CAD models for testing and demonstration are stored in the `samples/` directory, organized by validity (`valid/` and `invalid/`).

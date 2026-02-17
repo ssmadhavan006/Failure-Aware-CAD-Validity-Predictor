@@ -1,13 +1,4 @@
-"""
-Dataset Generation Pipeline — Phase 1
-======================================
-Generates a labeled dataset of 2,500+ synthetic CAD samples across
-5 failure classes, using real OpenCascade kernel checks for labels.
-
-Usage:
-    python scripts/generate_dataset.py [--samples-per-class 500] [--seed 42]
-                                        [--export-step] [--output data/dataset.jsonl]
-"""
+"""Generate a labeled dataset of synthetic CAD samples with kernel-checked labels."""
 
 from __future__ import annotations
 
@@ -55,11 +46,7 @@ def generate_dataset(
         "kernel_valid": 0,
     }
 
-    print()
-    print("╔═══════════════════════════════════════════════════════╗")
-    print("║   Phase 1 — Dataset Generation Pipeline               ║")
-    print("╚═══════════════════════════════════════════════════════╝")
-    print()
+    print("\nDataset Generation Pipeline\n")
 
     t_start = time.time()
 
@@ -138,14 +125,14 @@ def generate_dataset(
             stats["construction_errors"] += class_errors
 
             print(
-                f"    ✓ {samples_per_class} samples in {elapsed:.1f}s "
+                f"    [ok] {samples_per_class} samples in {elapsed:.1f}s "
                 f"(valid={class_valid}, invalid={class_invalid}, "
                 f"errors={class_errors})"
             )
 
     total_time = time.time() - t_start
 
-    # ── Summary ──────────────────────────────────────────────────
+    # Summary
     print()
     print("=" * 55)
     print("  Dataset Summary")

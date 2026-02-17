@@ -1,4 +1,4 @@
-# Phase 4 — Evaluation & Failure Analysis
+# Evaluation & Failure Analysis
 
 > **Script:** `scripts/phase4_evaluation.py`  
 > **Output:** `models/phase4_report.txt`, `models/phase4_metrics.json`, `models/phase4_misclassified.json`, `models/figures/`
@@ -7,7 +7,7 @@
 
 ## Overview
 
-Phase 4 performs an in-depth evaluation of the trained models across seven sections. It goes beyond simple accuracy metrics to analyze calibration quality, explainability via SHAP, error patterns, ablation effects, uncertainty behavior, and decision boundary ambiguity.
+This step performs an in-depth evaluation of the trained models across seven sections. It goes beyond simple accuracy metrics to analyze calibration quality, explainability via SHAP, error patterns, ablation effects, uncertainty behavior, and decision boundary ambiguity.
 
 ---
 
@@ -222,7 +222,7 @@ All plots are saved to `models/figures/`:
 ## Usage
 
 ```bash
-# Run full Phase 4 evaluation
+# Run full evaluation
 python scripts/phase4_evaluation.py
 
 # Reports are saved to models/phase4_report.txt and models/phase4_metrics.json

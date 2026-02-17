@@ -56,13 +56,13 @@ Predict CAD construction validity across **5 classes** before execution:
 │  └── kernel_check.py      ← OCP BRepCheck + manifold checks     │
 │                                                                  │
 │  scripts/                                                        │
-│  ├── generate_dataset.py  ← Phase 1: synthetic data generation   │
-│  ├── extract_features.py  ← Phase 2: feature matrix construction │
-│  ├── analyze_features.py  ← Phase 2: importance & correlation    │
-│  ├── train_models.py      ← Phase 3: RF + calibration + ensemble │
-│  ├── phase3_audit.py      ← Phase 3: comprehensive model audit   │
-│  ├── phase4_evaluation.py ← Phase 4: evaluation & analysis       │
-│  ├── predict.py           ← Phase 5: CLI predictor               │
+│  ├── generate_dataset.py  ← Synthetic data generation   │
+│  ├── extract_features.py  ← Feature matrix construction │
+│  ├── analyze_features.py  ← Feature importance & correlation    │
+│  ├── train_models.py      ← RF + calibration + ensemble │
+│  ├── phase3_audit.py      ← Comprehensive model audit   │
+│  ├── phase4_evaluation.py ← Evaluation & analysis       │
+│  ├── predict.py           ← CLI predictor               │
 │  └── diagnose_predictions.py ← Diagnostic tooling               │
 │                                                                  │
 │  data/                    ← Generated data artifacts             │
@@ -85,14 +85,14 @@ Predict CAD construction validity across **5 classes** before execution:
 
 ---
 
-## 3. Pipeline Phases
+## 3. Pipeline Steps
 
-### Phase 0 — Environment Setup
+### Environment Setup
 
 - **Virtual environment** with CadQuery + OCP + scikit-learn
 - Verification script (`test_cad_setup.py`) validates kernel access
 
-### Phase 1 — Synthetic Data Generation
+### Synthetic Data Generation
 
 **Goal:** Create 2,500 labeled CAD samples (500 per class) using parametric generators.
 
@@ -122,7 +122,7 @@ The training pipeline uses `intended_label` to learn failure semantics that go b
 
 ---
 
-### Phase 2 — Feature Engineering
+### Feature Engineering
 
 **Goal:** Transform raw CAD shapes into a 60-dimensional numeric feature vector.
 
@@ -161,7 +161,7 @@ The training pipeline uses `intended_label` to learn failure semantics that go b
 
 ---
 
-### Phase 3 — Model Training
+### Model Training
 
 **Goal:** Build progressively sophisticated classifiers with uncertainty quantification.
 
@@ -196,7 +196,7 @@ The training pipeline uses `intended_label` to learn failure semantics that go b
 
 ---
 
-### Phase 4 — Evaluation & Failure Analysis
+### Evaluation & Failure Analysis
 
 **Goal:** In-depth evaluation spanning 7 analysis sections.
 
@@ -221,7 +221,7 @@ The training pipeline uses `intended_label` to learn failure semantics that go b
 
 ---
 
-### Phase 5 — Prediction Interface
+### Prediction Interface
 
 **Goal:** CLI tool for real-time prediction from construction parameters.
 
@@ -375,23 +375,23 @@ pip install -r requirements.txt
 ### Full Pipeline Execution
 
 ```bash
-# Phase 1: Generate dataset
+# Generate dataset
 python scripts/generate_dataset.py
 
-# Phase 2: Extract features
+# Extract features
 python scripts/extract_features.py
 python scripts/analyze_features.py
 
-# Phase 3: Train models
+# Train models
 python scripts/train_models.py
 
-# Phase 3: Audit
+# Audit
 python scripts/phase3_audit.py
 
-# Phase 4: Evaluate
+# Evaluate
 python scripts/phase4_evaluation.py
 
-# Phase 5: Predict
+# Predict
 python scripts/predict.py test_input.json --pretty --explain
 ```
 
@@ -467,4 +467,4 @@ python scripts/predict.py test_input.json --pretty --explain
 | `models/training_config.json` | Hyperparameter configuration |
 | `models/training_results.json` | Per-stage training metrics |
 | `models/phase4_metrics.json` | Final evaluation metrics |
-| `models/phase4_report.txt` | Phase 4 text report |
+| `models/phase4_report.txt` | Evaluation text report |

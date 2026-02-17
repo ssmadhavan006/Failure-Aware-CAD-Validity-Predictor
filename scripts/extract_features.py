@@ -1,16 +1,4 @@
-"""
-Feature Extraction Pipeline -- Phase 2
-======================================
-Loads the dataset.jsonl, reconstructs shapes from parameters,
-extracts base + graph features, and saves to:
-  - features.jsonl  (human-readable, per-record)
-  - X.npy / y.npy   (numpy arrays for ML)
-  - feature_names.json (ordered column names)
-
-Usage:
-    python scripts/extract_features.py [--input data/dataset.jsonl]
-                                        [--output-dir data]
-"""
+"""Feature extraction pipeline: reconstructs shapes and extracts base + graph features."""
 
 from __future__ import annotations
 
@@ -195,7 +183,7 @@ def extract_features(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Phase 2 -- Feature Extraction")
+    parser = argparse.ArgumentParser(description="Feature Extraction")
     parser.add_argument("--input", default="data/dataset.jsonl")
     parser.add_argument("--output-dir", default="data")
     args = parser.parse_args()

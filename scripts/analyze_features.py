@@ -1,16 +1,4 @@
-"""
-Feature Importance Analysis -- Phase 2 Extra Credit
-====================================================
-Loads X.npy / y.npy, fits a Random Forest, and prints
-feature importances ranked by Gini importance.
-
-Also computes pairwise feature correlations, flags
-low-variance / redundant features, prunes zero-importance
-features, and saves a reusable sklearn pipeline to disk.
-
-Usage:
-    python scripts/analyze_features.py [--data-dir data]
-"""
+"""Feature importance analysis, correlation, and pipeline construction."""
 
 from __future__ import annotations
 
@@ -104,7 +92,7 @@ def analyze_features(data_dir: str = "data") -> None:
             json.dump(importance_data, f, indent=2)
         print(f"\nImportances saved to {ddir / 'feature_importance.json'}")
 
-        # ── Prune zero-importance features ────────────────────────
+        # Prune zero-importance features
         selected = [names[i] for i in range(len(names)) if importances[i] > 0.0]
         pruned = [names[i] for i in range(len(names)) if importances[i] == 0.0]
 
@@ -115,13 +103,13 @@ def analyze_features(data_dir: str = "data") -> None:
         print(f"  Pruned:    {len(pruned)} features")
         if pruned:
             for p in pruned:
-                print(f"    ✗ {p}")
+                print(f"    [drop] {p}")
 
         with open(ddir / "selected_features.json", "w") as f:
             json.dump(selected, f, indent=2)
         print(f"\nSelected features saved to {ddir / 'selected_features.json'}")
 
-        # ── Build and save reusable pipeline ──────────────────────
+        # Build and save reusable pipeline
         pipeline = Pipeline(
             [
                 ("scaler", StandardScaler()),

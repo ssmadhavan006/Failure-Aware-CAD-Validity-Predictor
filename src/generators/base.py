@@ -15,7 +15,7 @@ from typing import Any
 import numpy as np
 
 
-# ── Failure class labels ────────────────────────────────────────────
+# Failure class labels
 LABEL_VALID = 0
 LABEL_SELF_INTERSECTION = 1
 LABEL_NON_MANIFOLD = 2

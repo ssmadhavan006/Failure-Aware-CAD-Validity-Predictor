@@ -1,4 +1,4 @@
-# Phase 3 — Model Training & Uncertainty Quantification
+# Model Training & Uncertainty Quantification
 
 > **Script:** `scripts/train_models.py`  
 > **Audit:** `scripts/phase3_audit.py`, `scripts/audit_checklist.py`  
@@ -182,7 +182,7 @@ Thresholds are tuned on the validation set to maximize accuracy while rejecting 
 | `rf_model.joblib` | joblib | Trained Random Forest classifier |
 | `model.pkl` | pickle | Calibrated Random Forest (CalibratedClassifierCV) |
 | `uncertainty_ensemble.joblib` | joblib | 5-model UncertaintyEnsemble |
-| `feature_pipeline.joblib` | joblib | StandardScaler + RF pipeline from analysis phase |
+| `feature_pipeline.joblib` | joblib | StandardScaler + RF pipeline from feature analysis |
 | `feature_extractor.pkl` | pickle | Feature extraction helper |
 | `training_config.json` | JSON | All hyperparameters and split ratios |
 | `training_results.json` | JSON | Metrics for every model stage |

@@ -1,5 +1,5 @@
 """
-Comprehensive checklist audit script for Phase 2 feature engineering.
+Comprehensive checklist audit script for feature engineering.
 Validates all items in sections A-K.
 """
 
@@ -27,14 +27,14 @@ def check(condition, msg):
     global passes, fails
     if condition:
         passes += 1
-        print(f"  ✅ {msg}")
+        print(f"  [PASS] {msg}")
     else:
         fails += 1
-        print(f"  ❌ {msg}")
+        print(f"  [FAIL] {msg}")
 
 
 print("=" * 70)
-print("🧩 A. FEATURE DEFINITION COVERAGE CHECKS")
+print("A. FEATURE DEFINITION COVERAGE CHECKS")
 print("=" * 70)
 
 # A.1 Base Geometry
@@ -143,7 +143,7 @@ for f in ["min_dim_over_tol", "dim_min_x_tol_ratio", "dim_min_x_tolerance"]:
 check(True, "Tolerance units consistent (OCC default 1e-7)")
 
 print("\n" + "=" * 70)
-print("🕸️ B. GRAPH / TOPOLOGY STRUCTURE FEATURES")
+print("B. GRAPH / TOPOLOGY STRUCTURE FEATURES")
 print("=" * 70)
 
 # B.1 Face Adjacency Graph
@@ -180,7 +180,7 @@ for f in loop_feats:
     check(not np.isnan(vals).any(), f"'{f}' no null values")
 
 print("\n" + "=" * 70)
-print("🧮 C. INTERACTION & CROSS FEATURES")
+print("C. INTERACTION & CROSS FEATURES")
 print("=" * 70)
 interaction_feats = [
     "dim_min_x_tol_ratio",
@@ -199,7 +199,7 @@ check(n_interaction <= 10, f"Interaction count reasonable ({n_interaction})")
 check(True, "Interaction features documented in FEATURE_NAMES with comments")
 
 print("\n" + "=" * 70)
-print("🏗️ D. FEATURE VECTOR CONSTRUCTION CHECKS")
+print("D. FEATURE VECTOR CONSTRUCTION CHECKS")
 print("=" * 70)
 
 # D.1 Fixed-Length Guarantee
@@ -233,7 +233,7 @@ check(np.isinf(X).sum() == 0, f"No infinite values ({np.isinf(X).sum()})")
 check(True, "No strings remain (numpy float64 array)")
 
 print("\n" + "=" * 70)
-print("🧼 E. FEATURE CLEANING & SCALING CHECKS")
+print("E. FEATURE CLEANING & SCALING CHECKS")
 print("=" * 70)
 
 # Missing values
@@ -261,7 +261,7 @@ saved_pipe = joblib.load(PROJECT_ROOT / "models" / "feature_pipeline.joblib")
 check(saved_pipe is not None, "Scaling pipeline saved (feature_pipeline.joblib)")
 
 print("\n" + "=" * 70)
-print("🔁 F. PIPELINE ENGINEERING CHECKS")
+print("F. PIPELINE ENGINEERING CHECKS")
 print("=" * 70)
 
 # extract_features implemented
@@ -290,7 +290,7 @@ check(
 )
 
 print("\n" + "=" * 70)
-print("📊 G. DATASET INTEGRATION CHECKS")
+print("G. DATASET INTEGRATION CHECKS")
 print("=" * 70)
 
 check(X.shape[0] == y.shape[0], f"X rows ({X.shape[0]}) == y rows ({y.shape[0]})")
@@ -301,7 +301,7 @@ check(True, "sample_id alignment preserved (sequential idx in features.jsonl)")
 check(X.shape[0] == y.shape[0], "No row count mismatch")
 
 print("\n" + "=" * 70)
-print("🔍 H. FEATURE VALIDATION SANITY TESTS")
+print("H. FEATURE VALIDATION SANITY TESTS")
 print("=" * 70)
 
 # Print 10 random samples
@@ -328,7 +328,7 @@ corr = np.corrcoef(X[:, variances > 1e-10], rowvar=False)
 check(np.isfinite(corr).all(), "Correlation matrix computable and finite")
 
 print("\n" + "=" * 70)
-print("⭐ I. EARLY FEATURE IMPORTANCE PASS")
+print("I. EARLY FEATURE IMPORTANCE PASS")
 print("=" * 70)
 
 check(len(imp) == len(names), f"Feature importance computed ({len(imp)} features)")
@@ -348,7 +348,7 @@ check(
 print(f"\n  Zero-importance features pruned: {zero_imp}")
 
 print("\n" + "=" * 70)
-print("🚨 K. RED FLAG CHECKS (Must All Be False)")
+print("K. RED FLAG CHECKS (Must All Be False)")
 print("=" * 70)
 
 # Feature vector length varies?
@@ -389,7 +389,7 @@ check(True, "No manual per-class feature tweaking (code review verified)")
 # Feature computed after label knowledge?
 check(True, "Features computed before label assignment (code review verified)")
 
-# ── SUMMARY ──
+# SUMMARY
 print("\n" + "=" * 70)
 print(f"AUDIT SUMMARY: {passes} PASSED, {fails} FAILED")
 print("=" * 70)

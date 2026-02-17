@@ -1,16 +1,4 @@
-"""
-Phase 3 — Model Building & Uncertainty Quantification
-======================================================
-1. Stratified split: Train 70% / Val 15% / Test 15%
-2. Baseline rule-based classifier (heuristic)
-3. Random Forest with balanced class weights
-4. Calibrate probabilities (CalibratedClassifierCV / Platt scaling)
-5. Ensemble uncertainty via 5 Random Forests
-6. Save models and preprocessors
-
-Usage:
-    python scripts/train_models.py [--data-dir data] [--seed 42]
-"""
+"""Model training pipeline: RF, calibration, and uncertainty ensemble."""
 
 from __future__ import annotations
 
@@ -34,7 +22,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 
-# ── Label constants (mirror src/generators/base.py) ──────────────
+# Label constants (mirror src/generators/base.py)
 LABEL_NAMES = {
     0: "valid",
     1: "self_intersection",
@@ -44,9 +32,7 @@ LABEL_NAMES = {
 }
 
 
-# ===================================================================
-# 3.1  Data Loading & Stratified Splitting
-# ===================================================================
+# --- Data Loading & Stratified Splitting ---
 
 
 def load_and_split(data_dir: Path, seed: int = 42):
@@ -100,7 +86,7 @@ def load_and_split(data_dir: Path, seed: int = 42):
         f"val={split_info['val_size']}, test={split_info['test_size']}"
     )
 
-    # ── Overlap verification ──────────────────────────────────────
+    # Overlap verification
     # Use hash-based row identity to check no sample appears in multiple splits
     train_hashes = {hash(X_train[i].tobytes()) for i in range(len(X_train))}
     val_hashes = {hash(X_val[i].tobytes()) for i in range(len(X_val))}
@@ -116,7 +102,7 @@ def load_and_split(data_dir: Path, seed: int = 42):
     else:
         print("  Split overlap check: PASS (no sample in multiple splits)")
 
-    # ── Class coverage check ─────────────────────────────────────
+    # Class coverage check
     all_classes = set(np.unique(y).tolist())
     for name, ys in [("train", y_train), ("val", y_val), ("test", y_test)]:
         present = set(np.unique(ys).tolist())
@@ -140,9 +126,7 @@ def load_and_split(data_dir: Path, seed: int = 42):
     }
 
 
-# ===================================================================
-# 3.2  Baseline Rule-Based Classifier
-# ===================================================================
+# --- Baseline Rule-Based Classifier ---
 
 
 class RuleBasedClassifier:
@@ -205,9 +189,7 @@ class RuleBasedClassifier:
         return np.array([self.predict_one(X[i]) for i in range(X.shape[0])])
 
 
-# ===================================================================
-# 3.3  Random Forest Training
-# ===================================================================
+# --- Random Forest Training ---
 
 
 def train_random_forest(X_train, y_train, seed=42):
@@ -230,9 +212,7 @@ def train_random_forest(X_train, y_train, seed=42):
     return rf
 
 
-# ===================================================================
-# 3.4  Calibrate Probabilities (Platt Scaling)
-# ===================================================================
+# --- Calibrate Probabilities (Platt Scaling) ---
 
 
 def calibrate_model(rf, X_train, y_train, X_val, y_val):
@@ -275,9 +255,7 @@ def calibrate_model(rf, X_train, y_train, X_val, y_val):
     return calibrated
 
 
-# ===================================================================
-# 3.5  Uncertainty via Ensemble Disagreement
-# ===================================================================
+# --- Uncertainty via Ensemble Disagreement ---
 
 
 class UncertaintyEnsemble:
@@ -433,9 +411,7 @@ class UncertaintyEnsemble:
         }
 
 
-# ===================================================================
-# Evaluation Utilities
-# ===================================================================
+# --- Evaluation Utilities ---
 
 
 def evaluate_model(name: str, model, X, y, label_names=None):
@@ -579,13 +555,11 @@ def evaluate_uncertainty(ensemble: UncertaintyEnsemble, X, y, label_names=None):
     }
 
 
-# ===================================================================
-# Main
-# ===================================================================
+# --- Main ---
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Phase 3 — Model Training")
+    parser = argparse.ArgumentParser(description="Model Training")
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
@@ -596,13 +570,9 @@ def main():
 
     import joblib
 
-    print()
-    print("╔═══════════════════════════════════════════════════════════╗")
-    print("║   Phase 3 — Model Building & Uncertainty Quantification  ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
-    print()
+    print("\nModel Building & Uncertainty Quantification\n")
 
-    # ── 3.1 Load & Split ─────────────────────────────────────────
+    # Load & Split
     data = load_and_split(data_dir, seed=args.seed)
     X_train, y_train = data["X_train"], data["y_train"]
     X_val, y_val = data["X_val"], data["y_val"]
@@ -614,8 +584,8 @@ def main():
         json.dump(data["split_info"], f, indent=2)
     print(f"Split info saved to {data_dir / 'split_info.json'}")
 
-    # ── 3.2 Baseline Rule-Based ──────────────────────────────────
-    print("\n── 3.2 Baseline Rule-Based Classifier ──────────────────")
+    # Baseline Rule-Based
+    print("\nBaseline Rule-Based Classifier")
     baseline = RuleBasedClassifier(feature_names)
     baseline_test = evaluate_model(
         "Baseline Rule-Based Classifier (Test Set)",
@@ -625,8 +595,8 @@ def main():
         LABEL_NAMES,
     )
 
-    # ── 3.3 Random Forest ────────────────────────────────────────
-    print("\n── 3.3 Random Forest Training ──────────────────────────")
+    # Random Forest
+    print("\nRandom Forest Training")
     rf = train_random_forest(X_train, y_train, seed=args.seed)
 
     rf_val = evaluate_model(
@@ -644,8 +614,8 @@ def main():
         LABEL_NAMES,
     )
 
-    # ── 3.4 Calibrate Probabilities ──────────────────────────────
-    print("\n── 3.4 Probability Calibration (Platt Scaling) ────────")
+    # Calibrate Probabilities
+    print("\nProbability Calibration (Platt Scaling)")
     calibrated_rf = calibrate_model(rf, X_train, y_train, X_val, y_val)
 
     cal_test = evaluate_model(
@@ -661,8 +631,8 @@ def main():
     cal_before = evaluate_calibration("  Uncalibrated RF", rf, X_test, y_test)
     cal_after = evaluate_calibration("  Calibrated RF", calibrated_rf, X_test, y_test)
 
-    # ── 3.5 Uncertainty Ensemble ─────────────────────────────────
-    print("\n── 3.5 Uncertainty Ensemble (5 Random Forests) ────────")
+    # Uncertainty Ensemble
+    print("\nUncertainty Ensemble (5 Random Forests)")
     ensemble = UncertaintyEnsemble(
         n_models=5,
         base_seed=args.seed,
@@ -686,17 +656,17 @@ def main():
     # Detailed uncertainty analysis
     uncertainty_results = evaluate_uncertainty(ensemble, X_test, y_test, LABEL_NAMES)
 
-    # ── 3.6 Save Models & Preprocessors ──────────────────────────
-    print("\n── 3.6 Saving Models & Preprocessors ───────────────────")
+    # Save Models & Preprocessors
+    print("\nSaving Models & Preprocessors")
 
     joblib.dump(rf, models_dir / "rf_model.joblib")
-    print(f"  ✓ Raw RF         → {models_dir / 'rf_model.joblib'}")
+    print(f"  [ok] Raw RF         -> {models_dir / 'rf_model.joblib'}")
 
     joblib.dump(calibrated_rf, models_dir / "model.pkl")
-    print(f"  ✓ Calibrated RF  → {models_dir / 'model.pkl'}")
+    print(f"  [ok] Calibrated RF  -> {models_dir / 'model.pkl'}")
 
     joblib.dump(ensemble, models_dir / "uncertainty_ensemble.joblib")
-    print(f"  ✓ Ensemble (5RF) → {models_dir / 'uncertainty_ensemble.joblib'}")
+    print(f"  [ok] Ensemble (5RF) -> {models_dir / 'uncertainty_ensemble.joblib'}")
 
     # Save feature extractor info (feature names + ordering)
     feature_extractor_info = {
@@ -704,7 +674,7 @@ def main():
         "n_features": len(feature_names),
     }
     joblib.dump(feature_extractor_info, models_dir / "feature_extractor.pkl")
-    print(f"  ✓ Feature info   → {models_dir / 'feature_extractor.pkl'}")
+    print(f"  [ok] Feature info   -> {models_dir / 'feature_extractor.pkl'}")
 
     # Save class mapping / label encoder
     present_classes = sorted(
@@ -721,7 +691,7 @@ def main():
     }
     with open(models_dir / "label_encoder.json", "w") as f:
         json.dump(class_mapping, f, indent=2)
-    print(f"  ✓ Class mapping  → {models_dir / 'label_encoder.json'}")
+    print(f"  [ok] Class mapping  -> {models_dir / 'label_encoder.json'}")
 
     # Save feature importance
     importances = rf.feature_importances_
@@ -736,7 +706,7 @@ def main():
     }
     with open(models_dir / "feature_importance.json", "w") as f:
         json.dump(feature_importance_data, f, indent=2)
-    print(f"  ✓ Feature import → {models_dir / 'feature_importance.json'}")
+    print(f"  [ok] Feature import -> {models_dir / 'feature_importance.json'}")
     print("\n  Top 10 features:")
     for rank, (fname, imp) in enumerate(fi[:10], 1):
         print(f"    {rank:2d}. {fname:30s} {imp:.4f}")
@@ -775,9 +745,9 @@ def main():
     }
     with open(models_dir / "training_config.json", "w") as f:
         json.dump(training_config, f, indent=2)
-    print(f"  ✓ Config file    → {models_dir / 'training_config.json'}")
+    print(f"  [ok] Config file    -> {models_dir / 'training_config.json'}")
 
-    # ── Summary ──────────────────────────────────────────────────
+    # Summary
     results = {
         "baseline_test": baseline_test,
         "rf_val": rf_val,

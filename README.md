@@ -62,17 +62,17 @@ python scripts/predict.py --test-suite
 
 ## Project Status
 
-This project is a complete and functional machine learning pipeline for predicting CAD model validity. All phases of the project, from data generation to prediction, are complete and have been documented. The model achieves an accuracy of **99.0%** on the test set and includes uncertainty quantification to identify ambiguous predictions.
+This project is a complete and functional machine learning pipeline for predicting CAD model validity. All stages of the project, from data generation to prediction, are complete and have been documented. The model achieves an accuracy of **99.0%** on the test set and includes uncertainty quantification to identify ambiguous predictions.
 
 ## Documentation
 
 This `README.md` file provides a high-level overview of the project. For more detailed documentation, please refer to the files in the `docs` directory:
 
 *   **[Comprehensive Project Report](docs/comprehensive_report.md):** A detailed report covering all aspects of the project, including feature design, model architecture, evaluation metrics, and failure analysis.
-*   **[Phase 1: Data Generation](docs/01_data_generation.md):** A detailed description of the synthetic data generation process.
-*   **[Phase 2: Feature Engineering](docs/02_feature_engineering.md):** A detailed description of the feature engineering pipeline.
-*   **[Phase 3: Model Training](docs/03_model_training.md):** A detailed description of the model training and calibration process.
-*   **[Phase 4: Evaluation & Failure Analysis](docs/04_evaluation_and_failure_analysis.md):** An in-depth analysis of the model's performance, including error analysis and explainability.
+*   **[Data Generation](docs/01_data_generation.md):** A detailed description of the synthetic data generation process.
+*   **[Feature Engineering](docs/02_feature_engineering.md):** A detailed description of the feature engineering pipeline.
+*   **[Model Training](docs/03_model_training.md):** A detailed description of the model training and calibration process.
+*   **[Evaluation & Failure Analysis](docs/04_evaluation_and_failure_analysis.md):** An in-depth analysis of the model's performance, including error analysis and explainability.
 
 ## Project Structure
 
@@ -81,7 +81,7 @@ cad/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── test_cad_setup.py       # Phase 0 verification script
+├── test_cad_setup.py       # Environment verification script
 ├── test_input.json         # Example input for predict.py
 ├── GEMINI.md               # Project context for AI assistants
 ├── src/
@@ -100,14 +100,14 @@ cad/
 │       ├── degenerate.py         # Zero-dim, near-zero extrude, extreme aspect
 │       └── tolerance.py          # Sub-tolerance, scale mismatch, micro fillet
 ├── scripts/
-│   ├── generate_dataset.py   # Phase 1: synthetic data generation
-│   ├── extract_features.py   # Phase 2: feature matrix construction
-│   ├── analyze_features.py   # Phase 2: feature importance analysis
-│   ├── train_models.py       # Phase 3: RF + calibration + ensemble
-│   ├── audit_checklist.py    # Phase 3: model audit
-│   ├── phase3_audit.py       # Phase 3: comprehensive audit
-│   ├── phase4_evaluation.py  # Phase 4: evaluation & analysis
-│   ├── predict.py            # Phase 5: CLI predictor
+│   ├── generate_dataset.py   # Synthetic data generation
+│   ├── extract_features.py   # Feature matrix construction
+│   ├── analyze_features.py   # Feature importance analysis
+│   ├── train_models.py       # RF + calibration + ensemble
+│   ├── audit_checklist.py    # Model audit
+│   ├── phase3_audit.py       # Comprehensive audit
+│   ├── phase4_evaluation.py  # Evaluation & analysis
+│   ├── predict.py            # CLI predictor
 │   └── diagnose_predictions.py  # Prediction diagnostics
 ├── data/                     # Generated data (gitignored)
 │   ├── dataset.jsonl
@@ -138,9 +138,9 @@ cad/
     └── TECHNICAL_REPORT.md
 ```
 
-## Phases
+## Pipeline Steps
 
-| Phase | Description | Status |
+| Step | Description | Status |
 |-------|-------------|--------|
 | 0 | Environment & Prerequisites | ✅ Complete |
 | 1 | Synthetic Data Generation | ✅ Complete |

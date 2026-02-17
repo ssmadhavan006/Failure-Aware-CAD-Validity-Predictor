@@ -1,14 +1,4 @@
-"""
-Phase 3 — Comprehensive Audit & Report Artifacts
-=================================================
-Generates all plots, verification checks, and report-ready artifacts
-required by the Phase 3 completion checklist.
-
-Outputs saved to models/figures/ and models/audit_report.txt.
-
-Usage:
-    python scripts/phase3_audit.py [--data-dir data] [--models-dir models] [--seed 42]
-"""
+"""Audit script: generates plots, verification checks, and report artifacts."""
 
 from __future__ import annotations
 
@@ -58,9 +48,7 @@ LABEL_NAMES = {
 }
 
 
-# ===================================================================
-# Utilities
-# ===================================================================
+# --- Utilities ---
 
 
 class AuditReport:
@@ -87,7 +75,7 @@ class AuditReport:
         n_fail = sum(1 for c in self.checks if c["status"] == "FAIL")
         with open(path, "w", encoding="utf-8") as f:
             f.write("=" * 70 + "\n")
-            f.write("  Phase 3 Audit Report\n")
+            f.write("  Model Training Audit Report\n")
             f.write("=" * 70 + "\n\n")
             f.write(f"  Total checks: {len(self.checks)}\n")
             f.write(f"  Passed:       {n_pass}\n")
@@ -137,9 +125,7 @@ def load_data_and_split(data_dir: Path, seed: int):
     }
 
 
-# ===================================================================
-# A. Data Split Integrity
-# ===================================================================
+# --- A. Data Split Integrity ---
 
 
 def audit_split_integrity(data, report: AuditReport):
@@ -206,9 +192,7 @@ def audit_split_integrity(data, report: AuditReport):
         )
 
 
-# ===================================================================
-# B. Preprocessing
-# ===================================================================
+# --- B. Preprocessing ---
 
 
 def audit_preprocessing(data, models_dir, report: AuditReport):
@@ -235,9 +219,7 @@ def audit_preprocessing(data, models_dir, report: AuditReport):
     report.check(section, "No Inf in training data", not has_inf)
 
 
-# ===================================================================
-# C. Baseline Rule-Based
-# ===================================================================
+# --- C. Baseline Rule-Based ---
 
 
 def audit_baseline(data, models_dir, report: AuditReport):
@@ -266,9 +248,7 @@ def audit_baseline(data, models_dir, report: AuditReport):
         )
 
 
-# ===================================================================
-# D. Random Forest
-# ===================================================================
+# --- D. Random Forest ---
 
 
 def audit_rf(data, models_dir, report: AuditReport):
@@ -316,9 +296,7 @@ def audit_rf(data, models_dir, report: AuditReport):
         )
 
 
-# ===================================================================
-# E. Probability Outputs
-# ===================================================================
+# --- E. Probability Outputs ---
 
 
 def audit_probabilities(data, models_dir, fig_dir, report: AuditReport):
@@ -374,9 +352,7 @@ def audit_probabilities(data, models_dir, fig_dir, report: AuditReport):
     report.check(section, "Max-probability distribution plotted", True)
 
 
-# ===================================================================
-# F. Calibration
-# ===================================================================
+# --- F. Calibration ---
 
 
 def audit_calibration(data, models_dir, fig_dir, report: AuditReport):
@@ -484,9 +460,7 @@ def audit_calibration(data, models_dir, fig_dir, report: AuditReport):
         )
 
 
-# ===================================================================
-# G & H. Ensemble Uncertainty + Threshold Tuning
-# ===================================================================
+# --- G & H. Ensemble Uncertainty + Threshold Tuning ---
 
 
 def audit_ensemble_and_thresholds(data, models_dir, fig_dir, report: AuditReport):
@@ -640,9 +614,7 @@ def audit_ensemble_and_thresholds(data, models_dir, fig_dir, report: AuditReport
     report.check(section_h, "Uncertainty threshold plot saved", True)
 
 
-# ===================================================================
-# I. Evaluation + Confusion Matrix Figures
-# ===================================================================
+# --- I. Evaluation + Confusion Matrix Figures ---
 
 
 def audit_evaluation(data, models_dir, fig_dir, report: AuditReport):
@@ -709,9 +681,7 @@ def audit_evaluation(data, models_dir, fig_dir, report: AuditReport):
         )
 
 
-# ===================================================================
-# D (cont). Feature Importance Chart
-# ===================================================================
+# --- D (cont). Feature Importance Chart ---
 
 
 def plot_feature_importance(models_dir, fig_dir, report: AuditReport):
@@ -756,9 +726,7 @@ def plot_feature_importance(models_dir, fig_dir, report: AuditReport):
     report.check(section, "Feature importance chart saved", True)
 
 
-# ===================================================================
-# J. Model Persistence + Reload Test
-# ===================================================================
+# --- J. Model Persistence + Reload Test ---
 
 
 def audit_persistence(data, models_dir, report: AuditReport):
@@ -809,9 +777,7 @@ def audit_persistence(data, models_dir, report: AuditReport):
         )
 
 
-# ===================================================================
-# K. Reproducibility
-# ===================================================================
+# --- K. Reproducibility ---
 
 
 def audit_reproducibility(models_dir, report: AuditReport):
@@ -837,9 +803,7 @@ def audit_reproducibility(models_dir, report: AuditReport):
     )
 
 
-# ===================================================================
-# L. Leakage Red Flags
-# ===================================================================
+# --- L. Leakage Red Flags ---
 
 
 def audit_leakage(models_dir, data, report: AuditReport):
@@ -890,9 +854,7 @@ def audit_leakage(models_dir, data, report: AuditReport):
     )
 
 
-# ===================================================================
-# M. Comparison Table
-# ===================================================================
+# --- M. Comparison Table ---
 
 
 def generate_comparison_table(models_dir, fig_dir, report: AuditReport):
@@ -939,14 +901,12 @@ def generate_comparison_table(models_dir, fig_dir, report: AuditReport):
         report.check(section, f"Figure: {fig_name}", exists)
 
 
-# ===================================================================
-# Main
-# ===================================================================
+# --- Main ---
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Phase 3 -- Comprehensive Audit & Report Artifacts"
+        description="Comprehensive Audit & Report Artifacts"
     )
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--models-dir", default="models")
@@ -960,7 +920,7 @@ def main():
 
     print()
     print("=" * 70)
-    print("  Phase 3 -- Comprehensive Audit & Report Artifacts")
+    print("  Comprehensive Audit & Report Artifacts")
     print("=" * 70)
     print()
 

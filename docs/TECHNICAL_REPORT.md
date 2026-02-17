@@ -39,14 +39,14 @@ cad/
 │   │   ├── base_features.py      # 36 geometric features (bbox, topo, ratios, interactions)
 │   │   └── graph_features.py     # 24 Face Adjacency Graph features
 │   └── kernel_check.py           # BRepCheck_Analyzer + manifold validation
-├── scripts/                      # Pipeline scripts (one per phase)
-│   ├── generate_dataset.py       # Phase 1 — data generation
-│   ├── extract_features.py       # Phase 2 — feature matrix construction
-│   ├── analyze_features.py       # Phase 2 — feature importance & correlation
-│   ├── train_models.py           # Phase 3 — RF + calibration + ensemble
-│   ├── phase3_audit.py           # Phase 3 — comprehensive model audit
-│   ├── phase4_evaluation.py      # Phase 4 — evaluation & failure analysis
-│   ├── predict.py                # Phase 5 — CLI prediction tool
+├── scripts/                      # Pipeline scripts
+│   ├── generate_dataset.py       # Data generation
+│   ├── extract_features.py       # Feature matrix construction
+│   ├── analyze_features.py       # Feature importance & correlation
+│   ├── train_models.py           # RF + calibration + ensemble
+│   ├── phase3_audit.py           # Comprehensive model audit
+│   ├── phase4_evaluation.py      # Evaluation & failure analysis
+│   ├── predict.py                # CLI prediction tool
 │   └── diagnose_predictions.py   # Diagnostic utilities
 ├── data/                         # Generated datasets (gitignored)
 ├── models/                       # Trained model artifacts (gitignored)
@@ -239,7 +239,7 @@ A **baseline rule-based classifier** (hand-coded thresholds on `min_dimension`, 
 | Calibrated RF | 100.0% | 100.0% |
 | Ensemble (5 RF) | 99.7% | 99.7% |
 
-#### Per-Class Performance (Phase 4 Test Set: 309 usable samples)
+#### Per-Class Performance (Test Set: 309 usable samples)
 
 | Class | Precision | Recall | F1 | Support |
 |-------|-----------|--------|----|---------|
@@ -325,7 +325,7 @@ This limits the model's generalization to production CAD environments without fi
 
 Degenerate and tolerance-error shapes are kernel-valid (OCC builds them successfully), so their labels come from the generator's *intent* rather than measured kernel failure. This creates a labeling philosophy question: are these shapes truly "invalid" or just "risky"? The current approach treats them as failure classes, but in some CAD workflows they may be acceptable.
 
-Additionally, the Phase 4 test set contains only **2 tolerance-error samples** (due to the stratified test split filtering), providing limited statistical power for evaluating tolerance-class performance.
+Additionally, the test set contains only **2 tolerance-error samples** (due to the stratified test split filtering), providing limited statistical power for evaluating tolerance-class performance.
 
 #### 4. Feature Engineering Ceiling
 
@@ -348,12 +348,12 @@ The model is trained in a single batch and does not support online or incrementa
 
 ```bash
 # End-to-end pipeline
-python scripts/generate_dataset.py          # Phase 1
-python scripts/extract_features.py          # Phase 2
-python scripts/analyze_features.py          # Phase 2 (optional: importance)
-python scripts/train_models.py              # Phase 3
-python scripts/phase4_evaluation.py         # Phase 4
-python scripts/predict.py test_input.json --pretty --explain  # Phase 5
+python scripts/generate_dataset.py          # Data generation
+python scripts/extract_features.py          # Feature extraction
+python scripts/analyze_features.py          # Feature importance (optional)
+python scripts/train_models.py              # Model training
+python scripts/phase4_evaluation.py         # Evaluation
+python scripts/predict.py test_input.json --pretty --explain  # Prediction
 ```
 
 ## Appendix B — Environment Setup
@@ -385,3 +385,5 @@ python test_cad_setup.py
   }
 }
 ```
+
+The `valid` field is `true`, `false`, or `"uncertain"` (string) when the model cannot make a confident prediction. When uncertain, `failure_mode` is set to `"unknown"`.

@@ -1,4 +1,4 @@
-# Phase 2 — Feature Engineering
+# Feature Engineering
 
 > **Scripts:** `scripts/extract_features.py`, `scripts/analyze_features.py`  
 > **Source:** `src/features/` package  

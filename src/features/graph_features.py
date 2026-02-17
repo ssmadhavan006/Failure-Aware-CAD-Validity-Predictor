@@ -95,7 +95,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
         graph_edges : list[tuple]  -- adjacency pairs (i, j)
         graph_stats : dict[str, float] -- fixed-size graph statistics
     """
-    # ── Collect faces via IndexedMap (gives stable indices) ────────
+    # Collect faces via IndexedMap (gives stable indices)
     face_map = TopTools_IndexedMapOfShape()
     TopExp.MapShapes_s(shape, TopAbs_FACE, face_map)
 
@@ -103,7 +103,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
     if n_faces == 0:
         return _empty_graph_result()
 
-    # ── Node attributes ───────────────────────────────────────────
+    # Node attributes
     nodes = []
     type_counts: dict[str, int] = {}
     areas: list[float] = []
@@ -115,7 +115,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
         areas.append(area)
         type_counts[stype] = type_counts.get(stype, 0) + 1
 
-    # ── Edge map: find shared edges between faces ─────────────────
+    # Edge map: find shared edges between faces
     edge_face_map = TopTools_IndexedDataMapOfShapeListOfShape()
     TopExp.MapShapesAndAncestors_s(shape, TopAbs_EDGE, TopAbs_FACE, edge_face_map)
 
@@ -148,7 +148,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
 
     n_graph_edges = len(adjacency)
 
-    # ── Degree statistics ─────────────────────────────────────────
+    # Degree statistics
     degrees = [0] * n_faces
     for i, j in adjacency:
         degrees[i] += 1
@@ -163,7 +163,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
     )
     isolated_faces = sum(1 for d in degrees if d == 0)
 
-    # ── Connected components (BFS on adjacency) ───────────────────
+    # Connected components (BFS on adjacency)
     adj_list: dict[int, list[int]] = {i: [] for i in range(n_faces)}
     for i, j in adjacency:
         adj_list[i].append(j)
@@ -184,7 +184,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
                     visited[nb] = True
                     queue.append(nb)
 
-    # ── Edge loops per face (count wires per face) ───────────────
+    # Edge loops per face (count wires per face)
     wire_counts: list[int] = []
     for i in range(1, n_faces + 1):
         face = TopoDS.Face_s(face_map.FindKey(i))
@@ -199,7 +199,7 @@ def extract_graph_features(shape) -> dict[str, Any]:
     max_loops = max(wire_counts) if wire_counts else 0
     multi_loop_faces = sum(1 for w in wire_counts if w > 1)
 
-    # ── Assemble graph statistics (fixed-size vector) ─────────────
+    # Assemble graph statistics (fixed-size vector)
     stats: dict[str, float] = {
         "graph_n_nodes": float(n_faces),
         "graph_n_edges": float(n_graph_edges),

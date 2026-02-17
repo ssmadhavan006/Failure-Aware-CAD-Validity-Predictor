@@ -45,7 +45,7 @@ def extract_all_features(
     return features
 
 
-# ── Canonical feature order ────────────────────────────────────────
+# Canonical feature order
 # Defines the EXACT column order for X matrices. Every feature
 # extractor output key should appear here exactly once.
 FEATURE_NAMES: list[str] = [

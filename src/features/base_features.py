@@ -107,7 +107,7 @@ def extract_base_features(
     """
     features: dict[str, float] = {}
 
-    # ── Bounding box ──────────────────────────────────────────────
+    # Bounding box
     bb = _bounding_box(shape)
     features.update(bb)
 
@@ -116,7 +116,7 @@ def extract_base_features(
     features["dim_mid"] = dims[1]
     features["dim_max"] = dims[2]
 
-    # ── Ratios ────────────────────────────────────────────────────
+    # Ratios
     features["aspect_ratio"] = dims[2] / dims[0] if dims[0] > 1e-15 else 1e12
     features["mid_ratio"] = dims[1] / dims[0] if dims[0] > 1e-15 else 1e12
 
@@ -126,7 +126,7 @@ def extract_base_features(
     bbox_vol = bb["bbox_vol"]
     features["compactness"] = vol_area["volume"] / bbox_vol if bbox_vol > 1e-30 else 0.0
 
-    # ── Topology counts ───────────────────────────────────────────
+    # Topology counts
     features["n_vertices"] = _count(shape, TopAbs_VERTEX)
     features["n_edges"] = _count(shape, TopAbs_EDGE)
     features["n_wires"] = _count(shape, TopAbs_WIRE)
@@ -141,7 +141,7 @@ def extract_base_features(
         features["n_vertices"] - features["n_edges"] + features["n_faces"]
     )
 
-    # ── Boolean / construction flags ──────────────────────────────
+    # Boolean / construction flags
     if record:
         sf = record.get("sub_family", "")
         features["has_boolean_op"] = (
@@ -154,7 +154,7 @@ def extract_base_features(
         features["has_compound"] = 1.0 if features["n_compounds"] > 0 else 0.0
         features["is_multi_solid"] = 1.0 if features["n_solids"] > 1 else 0.0
 
-    # ── Tolerance metrics ─────────────────────────────────────────
+    # Tolerance metrics
     min_dim = features["dim_min"]
     features["min_dim_over_tol"] = (
         min_dim / OCC_DEFAULT_TOLERANCE if min_dim > 0 else 0.0
@@ -168,7 +168,7 @@ def extract_base_features(
         else -30.0
     )
 
-    # ── Interaction features (cross-term combinations) ────────────
+    # Interaction features (cross-term combinations)
     # Product of smallest dim and tolerance proximity — predictive of tolerance errors
     features["dim_min_x_tol_ratio"] = min_dim * features["min_dim_over_tol"]
 
