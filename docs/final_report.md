@@ -176,8 +176,6 @@ All classes achieve AP ≥ 0.95, indicating excellent precision-recall across th
 
 Brier score improved after calibration. The log-loss increase is expected for Platt scaling on near-perfect classifiers.
 
-![Calibration Curves](../models/figures/phase4_calibration_curves.png)
-
 ### 5.6 Ablation Study
 
 | Feature Set | Macro F1 | Δ |
@@ -188,7 +186,7 @@ Brier score improved after calibration. The log-loss increase is expected for Pl
 | + Interactions | 0.993 | 0 |
 | Full (All) | 0.993 | 0 |
 
-![Ablation Study](../models/figures/phase4_ablation_study.png)
+
 
 ### 5.7 Cross-Validation
 
@@ -232,10 +230,6 @@ All 3 are `boolean_union` shapes with multi-solid topology that genuinely resemb
 
 ![SHAP Summary (Global)](../models/figures/phase4_shap_summary.png)
 
-![SHAP Per-Class Breakdown](../models/figures/phase4_shap_per_class.png)
-
-![SHAP Waterfall — Local Explanation](../models/figures/phase4_shap_waterfall.png)
-
 **Misclassification root cause:** Driven by ambiguous topology features — the model sees multi-solid or low-compactness traits that overlap between Valid and NonManifold classes.
 
 ### 6.3 Uncertainty as Error Detector
@@ -247,15 +241,9 @@ All 3 are `boolean_union` shapes with multi-solid topology that genuinely resemb
 
 The uncertainty filter catches 100% of errors in the uncertain prediction set — making it highly actionable.
 
-![Uncertainty: Correct vs Wrong](../models/figures/phase4_uncertainty_correct_vs_wrong.png)
-
-![Ensemble Uncertainty Distribution](../models/figures/phase4_ensemble_uncertainty_dist.png)
-
 ### 6.4 Boundary Case Analysis
 
 3 samples fall in the ambiguity zone (0.4 ≤ max_prob ≤ 0.8). All cluster near the **Valid / NonManifold decision boundary** with intermediate compactness values where class distributions overlap. The model's confidence drops precisely at these ranges, confirming uncertainty is driven by **genuine geometric ambiguity** rather than random noise.
-
-![Boundary Analysis](../models/figures/phase4_boundary_analysis.png)
 
 ---
 
