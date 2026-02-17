@@ -1,15 +1,22 @@
 # Core ML & Data Science
-numpy
-pandas
-matplotlib
-scikit-learn
-joblib
-jupyter
-shap
-seaborn
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+joblib>=1.1.0
+
+# Visualization
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Model Explainability
+shap>=0.40.0
 
 # CAD Libraries
-cadquery
+# CadQuery includes OCP (OpenCascade Python bindings)
+cadquery>=2.2.0
+
+# Development
+jupyter>=1.0.0
 
 # Note: pythonocc-core is only available via conda.
 # CadQuery already includes OCP (OpenCascade Python bindings) which provides
